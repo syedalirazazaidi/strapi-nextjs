@@ -1,16 +1,95 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+interface Feature {
+  id: number;
+  title: string;
+}
+
+interface Banner {
+  id: number;
+  documentId: string;
+  text: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+interface StrapiResponse<T> {
+  data: T[];
+  meta: {
+    pagination: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
+}
 
 export default function Home() {
   const [currentFeature, setCurrentFeature] = useState(0);
+  const [features, setFeatures] = useState<Feature[]>([]);
+  const [banner, setBanner] = useState<Banner | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const features = [
-    "Industry Experts",
-    "Dedicated Team",
-    "Outcome Focused",
-    "High Quality Service",
-    "Cyber Security Expert",
-  ];
+  useEffect(() => {
+    const fetchFeatures = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:1337/api/features?populate=*",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch features");
+        }
+        const result: StrapiResponse<Feature & { features_name: string }> =
+          await response.json();
+        const fetchedFeatures = result.data.map((item) => ({
+          id: item.id,
+          title: item.features_name,
+        }));
+        setFeatures(fetchedFeatures);
+      } catch (err: any) {
+        setError(err.message);
+      }
+    };
+
+    fetchFeatures();
+  }, []);
+
+  useEffect(() => {
+    const fetchBanner = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:1337/api/banners?populate=*",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch banner");
+        }
+        const result: StrapiResponse<Banner> = await response.json();
+        setBanner(result.data[0] || null);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBanner();
+  }, []);
 
   const nextFeature = () => {
     setCurrentFeature((prev) => (prev + 1) % features.length);
@@ -20,17 +99,58 @@ export default function Home() {
     setCurrentFeature((prev) => (prev - 1 + features.length) % features.length);
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500 flex-col">
+        <p>Error: {error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-4 bg-pink-800 text-white px-4 py-2 rounded"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  if (features.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        No features available.
+      </div>
+    );
+  }
+
+  const descriptionParagraphs = banner?.description
+    ? banner.description.split("\n").filter((line) => line.trim() !== "")
+    : [
+        "Lorem ipsum dolor sit amet consectetur adipiscing elit. Ipsa cupiditate accusantium recusandae soluta explicabo hic!",
+      ];
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-12">
       <div className="text-center mb-16">
-        <h1 className="text-4xl font-bold text-gray-800 mb-2">Why Choose Us</h1>
+        <h1 className="text-4xl font-bold text-gray-800 mb-2">
+          {banner?.text}
+        </h1>
         <h2 className="text-3xl font-semibold text-gray-700 mb-4">
-          We Are Different From Others
+          {banner?.title}
         </h2>
-        <p className="text-gray-500 max-w-4xl mx-auto px-4">
-          Lorem ipsum dolor sit amet consectetur adipiscing elit. Ipsa
-          cupiditate accusantium recusandae soluta explicabo hic!
-        </p>
+        <div className="text-gray-500 max-w-4xl mx-auto px-4">
+          {descriptionParagraphs.map((paragraph, index) => (
+            <p key={index} className="mb-2">
+              {paragraph}
+            </p>
+          ))}
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-60">
@@ -55,7 +175,7 @@ export default function Home() {
         <div className="flex flex-col gap-6 mt-4 items-center justify-center h-auto md:h-80">
           {features.map((feature, index) => (
             <div
-              key={index}
+              key={feature.id}
               className={`flex items-center px-6 py-2 rounded-full cursor-pointer w-72 md:w-96 ${
                 index === currentFeature
                   ? "bg-pink-800 text-white"
@@ -71,7 +191,7 @@ export default function Home() {
                 &lt;
               </button>
               <div className="flex-1 flex justify-end items-center gap-2">
-                <span className="text-md font-bold">{feature}</span>
+                <span className="text-md font-bold">{feature.title}</span>
                 <button
                   onClick={nextFeature}
                   className="text-xl"
