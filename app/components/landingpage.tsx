@@ -40,7 +40,7 @@ export default function Home() {
     const fetchFeatures = async () => {
       try {
         const response = await fetch(
-          "http://localhost:1337/api/features?populate=*",
+          `${process.env.NEXT_PUBLIC_API_URL}/api/features?populate=*`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -69,7 +69,7 @@ export default function Home() {
     const fetchBanner = async () => {
       try {
         const response = await fetch(
-          "http://localhost:1337/api/banners?populate=*",
+          `${process.env.NEXT_PUBLIC_API_URL}/api/banners?populate=*`,
           {
             headers: {
               "Content-Type": "application/json",
