@@ -20,6 +20,7 @@ module.exports = [
       origin: [
         'http://localhost:3000', // For compatibility
         'http://localhost:3001', // Your frontend port
+        'https://strapi-nextjs-6vgy.vercel.app/'
       ],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       headers: ['Content-Type', 'Authorization'],
