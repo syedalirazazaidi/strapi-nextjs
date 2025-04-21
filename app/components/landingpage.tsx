@@ -42,14 +42,14 @@ export default function Home() {
       try {
         const response = await fetch(
           `/api/features?populate=*`,
-          // {
-          //   headers: {
-          //     "Content-Type": "application/json",
-          //     ...(process.env.STRAPI_API_TOKEN && {
-          //       Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
-          //     }),
-          //   },
-          // }
+          {
+            headers: {
+              "Content-Type": "application/json",
+              ...(process.env.STRAPI_API_TOKEN && {
+                Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
+              }),
+            },
+          }
         );
         if (!response.ok) {
           throw new Error(`Failed to fetch features: ${response.statusText}`);
@@ -74,14 +74,14 @@ export default function Home() {
       try {
         const response = await fetch(
           `/api/banners?populate=*`,
-          // {
-          //   headers: {
-          //     "Content-Type": "application/json",
-          //     ...(process.env.STRAPI_API_TOKEN && {
-          //       Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
-          //     }),
-          //   },
-          // }
+          {
+            headers: {
+              "Content-Type": "application/json",
+              ...(process.env.STRAPI_API_TOKEN && {
+                Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
+              }),
+            },
+          }
         );
         if (!response.ok) {
           throw new Error(`Failed to fetch banner: ${response.statusText}`);
