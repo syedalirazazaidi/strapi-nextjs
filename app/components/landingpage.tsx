@@ -41,7 +41,7 @@ export default function Home() {
     const fetchFeatures = async () => {
       try {
         const response = await fetch(
-          `https://abc.pehlighiza.akdndhrc.com/api/features?populate=*`,
+          `/api/features?populate=*`,
           // {
           //   headers: {
           //     "Content-Type": "application/json",
@@ -73,7 +73,7 @@ export default function Home() {
     const fetchBanner = async () => {
       try {
         const response = await fetch(
-          `https://abc.pehlighiza.akdndhrc.com/api/banners?populate=*`,
+          `/api/banners?populate=*`,
           // {
           //   headers: {
           //     "Content-Type": "application/json",
