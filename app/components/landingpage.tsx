@@ -44,17 +44,20 @@ export default function Home() {
           {
             headers: {
               "Content-Type": "application/json",
+              ...(process.env.STRAPI_API_TOKEN && {
+                Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
+              }),
             },
           }
         );
         if (!response.ok) {
-          throw new Error("Failed to fetch features");
+          throw new Error(`Failed to fetch features: ${response.statusText}`);
         }
         const result: StrapiResponse<Feature & { features_name: string }> =
           await response.json();
         const fetchedFeatures = result.data.map((item) => ({
           id: item.id,
-          title: item.features_name,
+          title: item.features_name, // Replace with 'name' or other if the field is different
         }));
         setFeatures(fetchedFeatures);
       } catch (err: any) {
@@ -73,11 +76,14 @@ export default function Home() {
           {
             headers: {
               "Content-Type": "application/json",
+              ...(process.env.STRAPI_API_TOKEN && {
+                Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
+              }),
             },
           }
         );
         if (!response.ok) {
-          throw new Error("Failed to fetch banner");
+          throw new Error(`Failed to fetch banner: ${response.statusText}`);
         }
         const result: StrapiResponse<Banner> = await response.json();
         setBanner(result.data[0] || null);
