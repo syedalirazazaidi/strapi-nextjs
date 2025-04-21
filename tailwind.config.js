@@ -1,13 +1,28 @@
-/** @type {import('tailwindcss').Config} */
-export default {
+// /** @type {import('tailwindcss').Config} */
+// export default {
+//     content: [
+//       './app/**/*.{js,ts,jsx,tsx,mdx}', // Scans all files in app/
+//       './components/**/*.{js,ts,jsx,tsx,mdx}', // If you have a components/ directory
+//     ],
+//     theme: {
+//       extend: {},
+//     },
+//     plugins: [],
+//   };
+
+module.exports = {
     content: [
-      './app/**/*.{js,ts,jsx,tsx,mdx}', // For App Router (if used)
-      './pages/**/*.{js,ts,jsx,tsx,mdx}', // For Pages Router
-      './components/**/*.{js,ts,jsx,tsx,mdx}', // For components
-      './src/**/*.{js,ts,jsx,tsx,mdx}', // If using src/ directory
+      "./app/**/*.{js,ts,jsx,tsx}",
+      "./pages/**/*.{js,ts,jsx,tsx}",
+      "./components/**/*.{js,ts,jsx,tsx}",
     ],
     theme: {
-      extend: {},
+      extend: {
+        colors: {
+          background: 'var(--color-background)',
+          foreground: 'var(--color-foreground)',
+        },
+      },
     },
     plugins: [],
-  };
+  }
