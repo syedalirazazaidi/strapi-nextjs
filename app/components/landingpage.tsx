@@ -41,7 +41,7 @@ export default function Home() {
     const fetchFeatures = async () => {
       try {
         const response = await fetch(
-          `http://93.127.195.209:1337/api/features?populate=*`,
+          `https://abc.pehlighiza.akdndhrc.com/api/features?populate=*`,
           // {
           //   headers: {
           //     "Content-Type": "application/json",
@@ -73,7 +73,7 @@ export default function Home() {
     const fetchBanner = async () => {
       try {
         const response = await fetch(
-          `http://93.127.195.209:1337/api/banners?populate=*`,
+          `https://abc.pehlighiza.akdndhrc.com/api/banners?populate=*`,
           // {
           //   headers: {
           //     "Content-Type": "application/json",
