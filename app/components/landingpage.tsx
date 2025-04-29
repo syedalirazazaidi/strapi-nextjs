@@ -1,102 +1,15 @@
-
 "use client";
-import { useState, useEffect } from "react";
 
-interface Feature {
-  id: number;
-  title: string;
+import { useState } from "react";
+import { Banner, Feature } from "../types/strapi";
+
+interface LandingPageProps {
+  features: Feature[];
+  banner: Banner | null;
 }
 
-interface Banner {
-  id: number;
-  documentId: string;
-  text: string;
-  title: string;
-  description: string;
-  createdAt: string;
-  updatedAt: string;
-  publishedAt: string;
-}
-
-interface StrapiResponse<T> {
-  data: T[];
-  meta: {
-    pagination: {
-      page: number;
-      pageSize: number;
-      pageCount: number;
-      total: number;
-    };
-  };
-}
-
-export default function Home() {
+export default function LandingPage({ features, banner }: LandingPageProps) {
   const [currentFeature, setCurrentFeature] = useState(0);
-  const [features, setFeatures] = useState<Feature[]>([]);
-  const [banner, setBanner] = useState<Banner | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchFeatures = async () => {
-      try {
-        const response = await fetch(
-          `/api/features?populate=*`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              ...(process.env.STRAPI_API_TOKEN && {
-                Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
-              }),
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error(`Failed to fetch features: ${response.statusText}`);
-        }
-        const result: StrapiResponse<Feature & { features_name: string }> =
-          await response.json();
-        const fetchedFeatures = result.data.map((item) => ({
-          id: item.id,
-          title: item.features_name, 
-        }));
-        setFeatures(fetchedFeatures);
-      } catch (err: any) {
-        setError(err.message);
-      }
-    };
-
-    fetchFeatures();
-  }, []);
-
-  useEffect(() => {
-    const fetchBanner = async () => {
-      try {
-        const response = await fetch(
-          `/api/banners?populate=*`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              ...(process.env.STRAPI_API_TOKEN && {
-                Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
-              }),
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error(`Failed to fetch banner: ${response.statusText}`);
-        }
-        const result: StrapiResponse<Banner> = await response.json();
-        setBanner(result.data[0] || null);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBanner();
-  }, []);
 
   const nextFeature = () => {
     setCurrentFeature((prev) => (prev + 1) % features.length);
@@ -105,28 +18,6 @@ export default function Home() {
   const prevFeature = () => {
     setCurrentFeature((prev) => (prev - 1 + features.length) % features.length);
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-red-500 flex-col">
-        <p>Error: {error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-4 bg-pink-800 text-white px-4 py-2 rounded"
-        >
-          Retry
-        </button>
-      </div>
-    );
-  }
 
   if (features.length === 0) {
     return (
